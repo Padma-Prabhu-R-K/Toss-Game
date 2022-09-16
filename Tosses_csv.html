@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toss Game</title>
+</head>
+<body>
+    <script>
+        Player1 = "User"
+        Player2 = "Computer"
+        toss = { Player1: 0, Player2: 0 }
+        sample = ['Head', 'Tail']
+        roundtiming = 15000 // (10000 + 5000)
+        breaktiming = 5000
+        count = 1
+        matchResult = []
+        roundResult = []
+        finalResult = []
+
+        // -------------------------------------------------------------------------------------------
+
+        let a = setInterval(function final() {
+            if (count == 5) {
+                clearInterval(a)
+                console.log(" ----------------------------------------------------------------------------------------------------------- ");
+                console.log('Overall HeadCount for all Rounds:', toss);
+                console.table(finalResult)
+                // ----------------------------------------------------------------------------------------------------------------------
+                // CSV File
+                cs = ""
+                cs += "Round,Toss,User,Computer"
+                cs += "\r\n"
+                
+                result = 0
+                breakStatement = 10 - 1
+                for (i of finalResult) {
+                    cs += i.Round + "," +i.Toss + ","+i.User + "," +i.Computer 
+                    cs += "\r\n"
+                    if (finalResult.indexOf(i) == breakStatement) {
+                        cs += roundResult[result]
+                        cs += "\r\n"
+                        result++
+                        breakStatement = breakStatement + 10
+                        if (result == 4) {
+                            cs += "FINAL"
+                            cs += "\r\n"
+                            cs += roundResult[result - 1]
+                            cs += "\r\n"
+                        }
+                    }
+                }
+
+                let tempBlob = new Blob([cs], {type:"text\csv"})
+
+                let tempURL = window.URL.createObjectURL(tempBlob)
+                let activation = document.createElement("a")
+                activation.href = tempURL
+
+                activation.download = "Toss Game.csv"
+
+                activation.click()
+                window.URL.revokeObjectURL(tempURL)
+                activation.remove()
+                // ----------------------------------------------------------------------------------------------------------------
+            }
+            else {
+                console.log(" ----------------------------------------------------------------------------------------------------------- ");
+                console.log('Round' + count + ':' + '\n');
+                console.log('\t' + '\t' + Player1 + '\t' + Player2 + '\n');
+                tossing()
+                count++
+                return final
+            }
+        }(), roundtiming);
+
+        // -------------------------------------------------------------------------------------------
+        function tossing() {                                                                                // Toss function for both the players
+            tossCount = 0
+            return new Promise(() => {
+                let b = setInterval(() => {
+                    if (tossCount == 10) {
+                        clearInterval(b)
+                        resultCalculation(toss.Player1, toss.Player2)
+                    }
+                    else {
+                        let player1Toss = sample[Math.floor(Math.random() * sample.length)]
+                        matchResult.push(player1Toss)
+                        if (player1Toss == 'Head') {
+                            toss.Player1 += 1
+                        }
+
+                        let player2Toss = sample[Math.floor(Math.random() * sample.length)]
+                        matchResult.push(player2Toss)
+                        if (player2Toss == 'Head') {
+                            toss.Player2 += 1
+                        }
+
+                        finalResult.push(                                                                              
+                            {
+                                Round: count - 1,
+                                Toss: tossCount+1,
+                                User: player1Toss,
+                                Computer: player2Toss
+                            })
+                        console.log('Toss:' + (tossCount+1) + '\t' + player1Toss + '\t' + player2Toss);
+                        tossCount++
+                    }
+                },1000)
+            })
+        }
+
+        function resultCalculation(User, Computer) {                                                    // Final Result 
+            diff = User - Computer
+            if (diff > 0) {
+                console.log(`User leads Computer by ${Math.abs(diff)} heads`)
+                roundResult.push(`User leads Computer by ${Math.abs(diff)} heads`)
+            }
+            else if (diff == 0) {
+                console.log("Both User and Computer got equal number of heads")
+                roundResult.push("Both User and Computer got equal number of heads")
+            }
+            else {
+                console.log(`Computer leads User by ${Math.abs(diff)} heads`);
+                roundResult.push(`Computer leads User by ${Math.abs(diff)} heads`)
+            }
+        }
+    </script>
+</body>
+</html>
