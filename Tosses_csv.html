@@ -8,22 +8,22 @@
 </head>
 <body>
     <script>
-        Player1 = "User"
-        Player2 = "Computer"
-        toss = { Player1: 0, Player2: 0 }
-        sample = ['Head', 'Tail']
-        roundtiming = 15000 // (10000 + 5000)
-        breaktiming = 5000
-        count = 1
+        let Player1 = "User"
+        let Player2 = "Computer"
+        const toss = { Player1: 0, Player2: 0 }
+        const sample = ['Head', 'Tail']
+        let roundtiming = 15000 // (10000 + 5000)
+        let breaktiming = 5000
+        var count = 1
         matchResult = []
         roundResult = []
         finalResult = []
 
         // -------------------------------------------------------------------------------------------
 
-        let a = setInterval(function final() {
+        let varInter = setInterval(function final() {
             if (count == 5) {
-                clearInterval(a)
+                clearInterval(varInter)
                 console.log(" ----------------------------------------------------------------------------------------------------------- ");
                 console.log('Overall HeadCount for all Rounds:', toss);
                 console.table(finalResult)
@@ -33,16 +33,16 @@
                 cs += "Round,Toss,User,Computer"
                 cs += "\r\n"
                 
-                result = 0
-                breakStatement = 10 - 1
+                let result = 0
+                let roundInterval = 10 - 1
                 for (i of finalResult) {
                     cs += i.Round + "," +i.Toss + ","+i.User + "," +i.Computer 
                     cs += "\r\n"
-                    if (finalResult.indexOf(i) == breakStatement) {
+                    if (finalResult.indexOf(i) == roundInterval) {
                         cs += roundResult[result]
                         cs += "\r\n"
                         result++
-                        breakStatement = breakStatement + 10
+                        roundInterval = roundInterval + 10
                         if (result == 4) {
                             cs += "FINAL"
                             cs += "\r\n"
@@ -63,7 +63,7 @@
                 activation.click()
                 window.URL.revokeObjectURL(tempURL)
                 activation.remove()
-                // ----------------------------------------------------------------------------------------------------------------
+                // ---------------------------------------------------------------------------------------------------------------
             }
             else {
                 console.log(" ----------------------------------------------------------------------------------------------------------- ");
@@ -78,44 +78,42 @@
         // -------------------------------------------------------------------------------------------
         function tossing() {                                                                                // Toss function for both the players
             tossCount = 0
-            return new Promise(() => {
-                let b = setInterval(() => {
-                    if (tossCount == 10) {
-                        clearInterval(b)
-                        resultCalculation(toss.Player1, toss.Player2)
+            let varInterForTossing = setInterval(() => {
+                if (tossCount == 10) {
+                    clearInterval(varInterForTossing)
+                    resultCalculation(toss.Player1, toss.Player2)
+                }
+                else {
+                    let player1Toss = sample[Math.floor(Math.random() * sample.length)]
+                    matchResult.push(player1Toss)
+                    if (player1Toss == 'Head') {
+                        toss.Player1 += 1
                     }
-                    else {
-                        let player1Toss = sample[Math.floor(Math.random() * sample.length)]
-                        matchResult.push(player1Toss)
-                        if (player1Toss == 'Head') {
-                            toss.Player1 += 1
-                        }
 
-                        let player2Toss = sample[Math.floor(Math.random() * sample.length)]
-                        matchResult.push(player2Toss)
-                        if (player2Toss == 'Head') {
-                            toss.Player2 += 1
-                        }
-
-                        finalResult.push(                                                                              
-                            {
-                                Round: count - 1,
-                                Toss: tossCount+1,
-                                User: player1Toss,
-                                Computer: player2Toss
-                            })
-                        console.log('Toss:' + (tossCount+1) + '\t' + player1Toss + '\t' + player2Toss);
-                        tossCount++
+                    let player2Toss = sample[Math.floor(Math.random() * sample.length)]
+                    matchResult.push(player2Toss)
+                    if (player2Toss == 'Head') {
+                        toss.Player2 += 1
                     }
-                },1000)
-            })
+
+                    finalResult.push(                                                                              
+                        {
+                            Round: count - 1,
+                            Toss: tossCount+1,
+                            User: player1Toss,
+                            Computer: player2Toss
+                        })
+                    console.log('Toss:' + (tossCount+1) + '\t' + player1Toss + '\t' + player2Toss);
+                    tossCount++
+                }
+            },1000)
         }
 
         function resultCalculation(User, Computer) {                                                    // Final Result 
             diff = User - Computer
             if (diff > 0) {
                 console.log(`User leads Computer by ${Math.abs(diff)} heads`)
-                roundResult.push(`User leads Computer by ${Math.abs(diff)} heads`)
+                roundResult.push(`User leads Computer by ${Math.abs(diff)} heads`)                      
             }
             else if (diff == 0) {
                 console.log("Both User and Computer got equal number of heads")
